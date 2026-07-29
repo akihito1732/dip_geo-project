@@ -1175,12 +1175,15 @@ document.getElementById('ringDraw').addEventListener('click', ()=>{
   clearRings();
   const interval = Math.max(10, parseFloat(document.getElementById('ringInterval').value)||500);
   const count = Math.min(10, Math.max(1, parseInt(document.getElementById('ringCount').value)||4));
+  // 内側から 青 → 緑 → 赤 の繰り返し
+  const RING_COLORS = ['#2f6fe0', '#2fa84f', '#d92b3a'];
   for(let i=1;i<=count;i++){
     const r = interval*i;
-    const circle = L.circle(currentLatLng, {
-      radius:r, color: i%2===0 ? '#ffd23f' : '#ff7a1a', weight:1.5, fillOpacity:0.03, dashArray:'4,4'
-    }).addTo(map);
-    ringLayers.push(circle);
+    ringLayers.push(L.circle(currentLatLng, {
+      radius:r, color:RING_COLORS[(i-1) % RING_COLORS.length],
+      weight:2.5, opacity:.95, fill:false, interactive:false
+    }).addTo(map));
+
     const labelLatLng = [currentLatLng[0] + (r/111320), currentLatLng[1]];
     const label = L.marker(labelLatLng, {
       icon: L.divIcon({ className:'', html:`<div class="ring-label">${fmtDist(r)}</div>`, iconSize:null }),
